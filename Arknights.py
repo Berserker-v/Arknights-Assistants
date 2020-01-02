@@ -2,6 +2,7 @@
 Arknights.py
 Author: DY
 Data: 2019.08.28
+- 2020.1.2 修改体力药检测坐标
 '''
 
 import time
@@ -101,17 +102,28 @@ while True:
     if drag == 'y':
         isdrag = True
 
+    # 输入是否退出
+    close = input("作战结束是否退出(y/n): ")
+    isclose = False
+    if close == 'y':
+        isclose = True
+
+    # intellect = 0
+    # intellect_last = 0
+    # cost = 0
+
     for i in range(0,int(epoch)):
+
         ### 开始行动
         # Relative Coordinates (1285,776)
         mouse_move(cal_pos_x(0.892), cal_pos_y(0.863), 2)
         time.sleep(2)
 
         # 检测是否需要吃药
-        # Relative Coordinates (127,538,144,556)
-        sanity_img = ImageGrab.grab((cal_pos_x(0.088),cal_pos_y(0.598),cal_pos_x(0.100),cal_pos_y(0.620)))
+        # Relative Coordinates (27,376,40,390)
+        sanity_img = ImageGrab.grab((cal_pos_x(0.029),cal_pos_y(0.528),cal_pos_x(0.029)+1,cal_pos_y(0.528)+1))
+        print(sanity_img.getcolors())
         sanity_rbg = sanity_img.getcolors()[0]
-        # print(sanity_rbg)
         if isdrag and (sanity_rbg[1] == (176,176,176)):
             # Relative Coordinates (1227,689)
             mouse_move(cal_pos_x(0.852), cal_pos_y(0.766), 2)
@@ -124,20 +136,31 @@ while True:
 
         # Relative Coordinates (1236,621)
         mouse_move(cal_pos_x(0.858), cal_pos_y(0.691), 2)
+        time.sleep(30)
 
-        ### 检测信赖判定结束
+        ### 检测敌人数旁Logo判定结束
         count = 0
         while True:
-            # Relative Coordinates (1105,576,1106,577)
-            trust_img = ImageGrab.grab((cal_pos_x(0.767),cal_pos_y(0.641),cal_pos_x(0.768),cal_pos_y(0.642)))
-            trust_rgb = trust_img.getcolors()[0]
-            print(trust_rgb)
-            if trust_rgb[1] == (255, 150, 2):
-                print("信赖提升...战斗结束 完成({}/{})".format(i+1, epoch))
-                time.sleep(5)
+            time.sleep(5)
+            # Relative Coordinates (782,81,783,82)
+            img = ImageGrab.grab((cal_pos_x(0.543),cal_pos_y(0.090),cal_pos_x(0.543)+1,cal_pos_y(0.090)+1))
+            img_rbg = img.getcolors()[0]
+            # print(img_rbg)
+            if img_rbg[1] != (255, 255, 255):
+                print("作战结束 完成({}/{})".format(i+1, epoch))
+                time.sleep(10)
+                # 检测是否升级
+                # Relative Coordinates (1293,418)
+                img = ImageGrab.grab((cal_pos_x(0.898),cal_pos_y(0.465),cal_pos_x(0.898)+1,cal_pos_y(0.465)+1))
+                img_rbg = img.getcolors()[0]
+                # print(img_rbg)
+                if img_rbg[1] == (45,44,43):
+                    print("Level Up")
+                    # Relative Coordinates (40,814)
+                    mouse_move(cal_pos_x(0.028), cal_pos_y(0.905), 3)
                 # Relative Coordinates (40,814)
                 mouse_move(cal_pos_x(0.028), cal_pos_y(0.905), 2)
-                time.sleep(2)
+                time.sleep(4)
                 break
             else:
                 if count%3 == 0:
@@ -146,11 +169,17 @@ while True:
                     print('Running.. '+'\b'*10, end='')
                 elif count%3 == 2:
                     print('Running...'+'\b'*10, end='')
-                if count > 60:
-                    count = 0
-                    # Relative Coordinates (40,814)
-                    mouse_move(cal_pos_x(0.028), cal_pos_y(0.905))      
+                if count > 20:
+                    count = 0     
                 time.sleep(5)
                 count += 1
+
+    if isclose:
+        # Relative Coordinates (1422,17)
+        mouse_move(cal_pos_x(0.988), cal_pos_y(0.019),5)
+        # Relative Coordinates (793,567)
+        mouse_move(cal_pos_x(0.551), cal_pos_y(0.631),2)
+        print("程序退出")
+        break
 
 
